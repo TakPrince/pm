@@ -8,7 +8,7 @@ This plan breaks the MVP into small parts. Each part should be completed, tested
 - [x] Review the current frontend app structure, tests, and build configuration.
 - [x] Expand this plan with substeps, tests, and success criteria for every part.
 - [x] Add `frontend/AGENTS.md` describing the existing frontend code and local conventions.
-- [ ] Ask the user to review and approve this plan before Part 2 starts.
+- [x] Ask the user to review and approve this plan before Part 2 starts.
 
 Tests:
 - No automated tests are required for documentation-only changes.
@@ -21,16 +21,16 @@ Success criteria:
 
 ## Part 2: Scaffolding
 
-- [ ] Review `backend/AGENTS.md` before editing backend files.
-- [ ] Review `scripts/AGENTS.md` before editing server scripts.
-- [ ] Add Docker infrastructure for a local single-container app.
-- [ ] Scaffold a FastAPI backend in `backend/`.
-- [ ] Configure Python dependencies with `uv`.
-- [ ] Add a backend health route.
-- [ ] Serve a small static HTML page from `/` for the first smoke test.
-- [ ] Add an API route that the static page calls successfully.
-- [ ] Add start and stop scripts for Mac, PC, and Linux in `scripts/`.
-- [ ] Keep `.env` support ready for later OpenRouter work without requiring AI calls yet.
+- [x] Review `backend/AGENTS.md` before editing backend files.
+- [x] Review `scripts/AGENTS.md` before editing server scripts.
+- [x] Add Docker infrastructure for a local single-container app.
+- [x] Scaffold a FastAPI backend in `backend/`.
+- [x] Configure Python dependencies with `uv`.
+- [x] Add a backend health route.
+- [x] Serve a small static HTML page from `/` for the first smoke test.
+- [x] Add an API route that the static page calls successfully.
+- [x] Add start and stop scripts for Mac, PC, and Linux in `scripts/`.
+- [x] Keep `.env` support ready for later OpenRouter work without requiring AI calls yet.
 
 Tests:
 - Run backend unit tests for the health/API routes.
@@ -45,15 +45,19 @@ Success criteria:
 - The backend creates no unnecessary app features yet.
 - Scripts are simple and documented by their names and comments only where needed.
 
+Verification note:
+- Backend unit tests and a local Uvicorn HTTP smoke test passed.
+- Docker build/start verification is blocked in this environment by Docker API permission errors on `/var/run/docker.sock`.
+
 ## Part 3: Add In Frontend
 
-- [ ] Review `frontend/AGENTS.md` before editing frontend files.
-- [ ] Configure the Next.js frontend for static export suitable for FastAPI serving.
-- [ ] Add a frontend build step to the Docker flow.
-- [ ] Copy or mount the static frontend output so FastAPI serves it at `/`.
-- [ ] Preserve the current Kanban board behavior: five fixed columns, rename columns, add cards, delete cards, and drag/drop cards.
-- [ ] Keep frontend state local for this part.
-- [ ] Remove the temporary static hello-world page once the real frontend is served.
+- [x] Review `frontend/AGENTS.md` before editing frontend files.
+- [x] Configure the Next.js frontend for static export suitable for FastAPI serving.
+- [x] Add a frontend build step to the Docker flow.
+- [x] Copy or mount the static frontend output so FastAPI serves it at `/`.
+- [x] Preserve the current Kanban board behavior: five fixed columns, rename columns, add cards, delete cards, and drag/drop cards.
+- [x] Keep frontend state local for this part.
+- [x] Remove the temporary static hello-world page once the real frontend is served.
 
 Tests:
 - Run frontend unit tests.
@@ -67,6 +71,10 @@ Success criteria:
 - The app served from FastAPI matches the current frontend demo behavior.
 - The frontend can be built repeatably in Docker.
 - Existing Kanban tests pass or are updated only for intentional integration changes.
+
+Verification note:
+- `npm run build`, frontend unit tests, backend tests, and a local FastAPI HTTP smoke test passed.
+- Full Playwright and Docker runtime verification were intentionally not run in this pass.
 
 ## Part 4: Add Fake User Sign In Experience
 
