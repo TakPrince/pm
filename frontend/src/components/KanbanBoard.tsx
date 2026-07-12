@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
   DndContext,
   DragOverlay,
@@ -14,14 +14,20 @@ import {
 import { KanbanColumn } from "@/components/KanbanColumn";
 import { KanbanCardPreview } from "@/components/KanbanCardPreview";
 import { createId, initialData, moveCard, type BoardData } from "@/lib/kanban";
+import { buildApiUrl } from "@/lib/api";
 
 type KanbanBoardProps = {
   onLogout?: () => void;
+  username?: string;
 };
 
-export const KanbanBoard = ({ onLogout }: KanbanBoardProps) => {
-  const [board, setBoard] = useState<BoardData>(() => initialData);
+export const KanbanBoard = ({ onLogout, username = "user" }: KanbanBoardProps) => {
+  const [board, setBoard] = useState<BoardData>(initialData);
   const [activeCardId, setActiveCardId] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState("");
+  const [hasLoadedInitialBoard, setHasLoadedInitialBoard] = useState(false);
+  const hasPersistedOnce = useRef(false);
 
   const sensors = useSensors(
     useSensor(PointerSensor, {
@@ -30,6 +36,76 @@ export const KanbanBoard = ({ onLogout }: KanbanBoardProps) => {
   );
 
   const cardsById = useMemo(() => board.cards, [board.cards]);
+
+  useEffect(() => {
+    let isCancelled = false;
+
+    const loadBoard = async () => {
+      setIsLoading(true);
+      setError("");
+
+      try {
+        const response = await fetch(buildApiUrl(`/api/board?username=${encodeURIComponent(username)}`));
+
+        if (!response.ok) {
+          throw new Error("Unable to load board");
+        }
+
+        const data = (await response.json()) as BoardData;
+
+        if (!isCancelled) {
+          setBoard(data);
+          setHasLoadedInitialBoard(true);
+        }
+      } catch {
+        if (!isCancelled) {
+          setError("Could not load the board from the server.");
+          setHasLoadedInitialBoard(true);
+        }
+      } finally {
+        if (!isCancelled) {
+          setIsLoading(false);
+        }
+      }
+    };
+
+    void loadBoard();
+
+    return () => {
+      isCancelled = true;
+    };
+  }, [username]);
+
+  useEffect(() => {
+    if (!hasLoadedInitialBoard || isLoading) {
+      return;
+    }
+
+    if (!hasPersistedOnce.current) {
+      hasPersistedOnce.current = true;
+      return;
+    }
+
+    const persistBoard = async () => {
+      try {
+        const response = await fetch(buildApiUrl(`/api/board?username=${encodeURIComponent(username)}`), {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(board),
+        });
+
+        if (!response.ok) {
+          throw new Error("Unable to save board");
+        }
+      } catch {
+        setError("Could not save the board to the server.");
+      }
+    };
+
+    void persistBoard();
+  }, [board, hasLoadedInitialBoard, isLoading, username]);
 
   const handleDragStart = (event: DragStartEvent) => {
     setActiveCardId(event.active.id as string);
@@ -116,6 +192,16 @@ export const KanbanBoard = ({ onLogout }: KanbanBoardProps) => {
               </p>
             </div>
             <div className="flex flex-col items-start gap-3 rounded-2xl border border-[var(--stroke)] bg-[var(--surface)] px-5 py-4">
+              {isLoading ? (
+                <p className="text-sm font-semibold text-[var(--primary-blue)]">
+                  Loading board...
+                </p>
+              ) : null}
+              {error ? (
+                <p className="text-sm font-semibold text-[var(--secondary-purple)]">
+                  {error}
+                </p>
+              ) : null}
               <p className="text-xs font-semibold uppercase tracking-[0.25em] text-[var(--gray-text)]">
                 Focus
               </p>
@@ -157,7 +243,9 @@ export const KanbanBoard = ({ onLogout }: KanbanBoardProps) => {
               <KanbanColumn
                 key={column.id}
                 column={column}
-                cards={column.cardIds.map((cardId) => board.cards[cardId])}
+                cards={column.cardIds
+                  .map((cardId) => board.cards[cardId])
+                  .filter((card): card is NonNullable<typeof card> => Boolean(card))}
                 onRename={handleRenameColumn}
                 onAddCard={handleAddCard}
                 onDeleteCard={handleDeleteCard}

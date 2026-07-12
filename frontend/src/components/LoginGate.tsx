@@ -4,15 +4,21 @@ import { useEffect, useState, type FormEvent } from "react";
 import { KanbanBoard } from "@/components/KanbanBoard";
 
 const AUTH_STORAGE_KEY = "pm-main-authenticated";
+const AUTH_USERNAME_STORAGE_KEY = "pm-main-username";
 
 export const LoginGate = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [authenticatedUsername, setAuthenticatedUsername] = useState("user");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
 
   useEffect(() => {
-    setIsAuthenticated(sessionStorage.getItem(AUTH_STORAGE_KEY) === "true");
+    const storedAuth = sessionStorage.getItem(AUTH_STORAGE_KEY) === "true";
+    const storedUsername = sessionStorage.getItem(AUTH_USERNAME_STORAGE_KEY) || "user";
+
+    setIsAuthenticated(storedAuth);
+    setAuthenticatedUsername(storedUsername);
   }, []);
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
@@ -20,6 +26,8 @@ export const LoginGate = () => {
 
     if (username === "user" && password === "password") {
       sessionStorage.setItem(AUTH_STORAGE_KEY, "true");
+      sessionStorage.setItem(AUTH_USERNAME_STORAGE_KEY, username);
+      setAuthenticatedUsername(username);
       setIsAuthenticated(true);
       setError("");
       return;
@@ -30,6 +38,8 @@ export const LoginGate = () => {
 
   const handleLogout = () => {
     sessionStorage.removeItem(AUTH_STORAGE_KEY);
+    sessionStorage.removeItem(AUTH_USERNAME_STORAGE_KEY);
+    setAuthenticatedUsername("user");
     setIsAuthenticated(false);
     setUsername("");
     setPassword("");
@@ -37,7 +47,7 @@ export const LoginGate = () => {
   };
 
   if (isAuthenticated) {
-    return <KanbanBoard onLogout={handleLogout} />;
+    return <KanbanBoard onLogout={handleLogout} username={authenticatedUsername} />;
   }
 
   return (
