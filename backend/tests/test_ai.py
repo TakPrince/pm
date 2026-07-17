@@ -67,3 +67,47 @@ def test_query_openrouter_malformed_response(mock_client_class):
     with patch.dict(os.environ, {"OPENROUTER_API_KEY": "test-key"}):
         with pytest.raises(AIError, match="Unexpected response structure"):
             query_openrouter([{"role": "user", "content": "What is 2+2?"}])
+
+
+def test_validate_and_sanitize_board_update_healing():
+    """Test that validate_and_sanitize_board_update automatically heals incomplete card models."""
+    from backend.app.ai import validate_and_sanitize_board_update
+    from backend.app.database import DEFAULT_BOARD_DATA
+    import json
+    
+    current_board = json.loads(json.dumps(DEFAULT_BOARD_DATA))
+    
+    # Simulate an AI update where a card is missing id and details
+    updated_board = json.loads(json.dumps(DEFAULT_BOARD_DATA))
+    new_card_id = "card-1a2b3c"
+    
+    # Insert new card missing id and details, only title is present
+    updated_board["cards"][new_card_id] = {
+        "title": "Simple BBA Study Guide"
+    }
+    updated_board["columns"][0]["cardIds"].append(new_card_id)
+    
+    # Call validation/healing
+    sanitized = validate_and_sanitize_board_update(current_board, updated_board)
+    
+    # Assert card is healed
+    healed_card = sanitized["cards"][new_card_id]
+    assert healed_card["id"] == new_card_id
+    assert healed_card["title"] == "Simple BBA Study Guide"
+    assert healed_card["details"] == ""
+
+
+def test_process_ai_chat_truncated_json_extraction():
+    """Test that process_ai_chat extracts the reply string using regex when the response is truncated JSON."""
+    from backend.app.ai import process_ai_chat
+    from unittest.mock import patch
+    
+    truncated_response = (
+        '{ "reply": "I\'ve added a \'6th Grade Study Schedule\' card.", "board": { "columns": ['
+    )
+    
+    with patch("backend.app.ai.query_openrouter", return_value=truncated_response):
+        res = process_ai_chat("mock message", [], {})
+        assert "6th Grade Study Schedule" in res["reply"]
+        assert "visual board could not be updated" in res["reply"]
+        assert res["board"] is None

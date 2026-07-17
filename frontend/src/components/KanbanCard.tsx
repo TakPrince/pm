@@ -35,7 +35,7 @@ export const KanbanCard = ({ card, onDelete }: KanbanCardProps) => {
           <h4 className="font-display text-base font-semibold text-[var(--navy-dark)]">
             {card.title}
           </h4>
-          <p className="mt-2 text-sm leading-6 text-[var(--gray-text)]">
+          <p className="mt-2 text-xs leading-relaxed text-[var(--gray-text)] line-clamp-2">
             {card.details}
           </p>
         </div>
