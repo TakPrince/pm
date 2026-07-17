@@ -13,6 +13,7 @@ import {
 } from "@dnd-kit/core";
 import { KanbanColumn } from "@/components/KanbanColumn";
 import { KanbanCardPreview } from "@/components/KanbanCardPreview";
+import { AiSidebar } from "@/components/AiSidebar";
 import { createId, initialData, moveCard, type BoardData } from "@/lib/kanban";
 import { buildApiUrl } from "@/lib/api";
 
@@ -23,6 +24,7 @@ type KanbanBoardProps = {
 
 export const KanbanBoard = ({ onLogout, username = "user" }: KanbanBoardProps) => {
   const [board, setBoard] = useState<BoardData>(initialData);
+  const [isChatOpen, setIsChatOpen] = useState(true);
   const [activeCardId, setActiveCardId] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState("");
@@ -208,15 +210,17 @@ export const KanbanBoard = ({ onLogout, username = "user" }: KanbanBoardProps) =
               <p className="mt-2 text-lg font-semibold text-[var(--primary-blue)]">
                 One board. Five columns. Zero clutter.
               </p>
-              {onLogout ? (
-                <button
-                  type="button"
-                  onClick={onLogout}
-                  className="border border-[var(--stroke)] px-3 py-2 text-xs font-semibold uppercase tracking-wide text-[var(--navy-dark)] transition hover:border-[var(--primary-blue)] hover:text-[var(--primary-blue)]"
-                >
-                  Log out
-                </button>
-              ) : null}
+              <div className="flex flex-wrap gap-2 mt-1">
+                {onLogout ? (
+                  <button
+                    type="button"
+                    onClick={onLogout}
+                    className="border border-[var(--stroke)] px-3.5 py-2 text-xs font-semibold uppercase tracking-wide text-[var(--navy-dark)] transition hover:border-[var(--primary-blue)] hover:text-[var(--primary-blue)] rounded-xl bg-white"
+                  >
+                    Log out
+                  </button>
+                ) : null}
+              </div>
             </div>
           </div>
           <div className="flex flex-wrap items-center gap-4">
@@ -238,7 +242,7 @@ export const KanbanBoard = ({ onLogout, username = "user" }: KanbanBoardProps) =
           onDragStart={handleDragStart}
           onDragEnd={handleDragEnd}
         >
-          <section className="grid gap-6 lg:grid-cols-5">
+          <section className="grid gap-6 lg:grid-cols-5 overflow-x-auto lg:overflow-x-visible pb-4 lg:pb-0">
             {board.columns.map((column) => (
               <KanbanColumn
                 key={column.id}
@@ -260,6 +264,31 @@ export const KanbanBoard = ({ onLogout, username = "user" }: KanbanBoardProps) =
             ) : null}
           </DragOverlay>
         </DndContext>
+
+        {/* Floating AI Chatbot Widget */}
+        <div className="fixed bottom-6 right-6 z-50 flex flex-col items-end">
+          {isChatOpen ? (
+            <div className="w-[360px] sm:w-[400px] h-[550px] bg-white rounded-3xl border border-[var(--stroke)] shadow-2xl overflow-hidden animate-in fade-in slide-in-from-bottom duration-200">
+              <AiSidebar
+                username={username}
+                board={board}
+                onBoardUpdate={setBoard}
+                onClose={() => setIsChatOpen(false)}
+              />
+            </div>
+          ) : (
+            <button
+              type="button"
+              onClick={() => setIsChatOpen(true)}
+              className="flex h-14 w-14 items-center justify-center rounded-full bg-[var(--secondary-purple)] text-white shadow-lg transition hover:scale-105 hover:brightness-110 active:scale-95 animate-in fade-in zoom-in duration-200"
+              aria-label="Open AI Assistant"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.0} stroke="currentColor" className="w-6 h-6">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M8.625 12a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H8.25m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H12m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0h-.375M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+              </svg>
+            </button>
+          )}
+        </div>
       </main>
     </div>
   );

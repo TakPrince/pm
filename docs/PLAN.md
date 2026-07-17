@@ -78,12 +78,12 @@ Verification note:
 
 ## Part 4: Add Fake User Sign In Experience
 
-- [ ] Add a simple login screen shown first at `/`.
-- [ ] Accept only username `user` and password `password`.
-- [ ] Store login state simply for the local MVP.
-- [ ] Show the Kanban board after successful login.
-- [ ] Add logout and return to the login screen.
-- [ ] Keep the database-ready user concept in mind, but do not build multi-user UI.
+- [x] Add a simple login screen shown first at `/`.
+- [x] Accept only username `user` and password `password`.
+- [x] Store login state simply for the local MVP.
+- [x] Show the Kanban board after successful login.
+- [x] Add logout and return to the login screen.
+- [x] Keep the database-ready user concept in mind, but do not build multi-user UI.
 
 Tests:
 - Unit test successful login.
@@ -100,13 +100,13 @@ Success criteria:
 
 ## Part 5: Database Modeling
 
-- [ ] Propose a SQLite schema that supports multiple future users.
-- [ ] Model one board per signed-in user for the MVP.
-- [ ] Store Kanban board data as JSON.
-- [ ] Include columns, column order, cards, and card ordering in the JSON shape.
-- [ ] Document database file location, creation behavior, and migration approach in `docs/`.
-- [ ] Include example JSON for the initial board.
-- [ ] Ask the user to approve the schema before Part 6 starts.
+- [x] Propose a SQLite schema that supports multiple future users.
+- [x] Model one board per signed-in user for the MVP.
+- [x] Store Kanban board data as JSON.
+- [x] Include columns, column order, cards, and card ordering in the JSON shape.
+- [x] Document database file location, creation behavior, and migration approach in `docs/`.
+- [x] Include example JSON for the initial board.
+- [x] Ask the user to approve the schema before Part 6 starts.
 
 Tests:
 - No runtime tests are required before schema approval.
@@ -119,13 +119,13 @@ Success criteria:
 
 ## Part 6: Backend
 
-- [ ] Implement SQLite database creation if the database file does not exist.
-- [ ] Seed the hardcoded MVP user if needed.
-- [ ] Seed one default board for the user if needed.
-- [ ] Add API routes to read the current user's board.
-- [ ] Add API routes to replace or update the current user's board.
-- [ ] Validate board JSON enough to protect the app from malformed payloads.
-- [ ] Keep API contracts simple and documented in `docs/` or backend tests.
+- [x] Implement SQLite database creation if the database file does not exist.
+- [x] Seed the hardcoded MVP user if needed.
+- [x] Seed one default board for the user if needed.
+- [x] Add API routes to read the current user's board.
+- [x] Add API routes to replace or update the current user's board.
+- [x] Validate board JSON enough to protect the app from malformed payloads.
+- [x] Keep API contracts simple and documented in `docs/` or backend tests.
 
 Tests:
 - Unit test database initialization.
@@ -142,11 +142,11 @@ Success criteria:
 
 ## Part 7: Frontend and Backend Integration
 
-- [ ] Replace local-only initial board state with a backend fetch after login.
-- [ ] Save column rename, card create, card delete, and drag/drop changes through the backend.
-- [ ] Show simple loading and error states.
-- [ ] Keep the UI focused on the existing Kanban workflows.
-- [ ] Ensure the board persists after refresh and container restart when the database volume/file remains.
+- [x] Replace local-only initial board state with a backend fetch after login.
+- [x] Save column rename, card create, card delete, and drag/drop changes through the backend.
+- [x] Show simple loading and error states.
+- [x] Keep the UI focused on the existing Kanban workflows.
+- [x] Ensure the board persists after refresh and container restart when the database volume/file remains.
 
 Tests:
 - Unit test frontend API client behavior.
@@ -163,12 +163,12 @@ Success criteria:
 
 ## Part 8: AI Connectivity
 
-- [ ] Read `OPENROUTER_API_KEY` from the project root `.env`.
-- [ ] Configure the backend to call OpenRouter.
-- [ ] Use model `openai/gpt-oss-120b`.
-- [ ] Add a small backend route or test helper for a simple connectivity check.
-- [ ] Run a "2+2" connectivity test only when the API key is available.
-- [ ] Keep AI connectivity isolated from Kanban mutation logic for this part.
+- [x] Read `OPENROUTER_API_KEY` from the project root `.env`.
+- [x] Configure the backend to call OpenRouter.
+- [x] Use model `openai/gpt-oss-120b`.
+- [x] Add a small backend route or test helper for a simple connectivity check.
+- [x] Run a "2+2" connectivity test only when the API key is available.
+- [x] Keep AI connectivity isolated from Kanban mutation logic for this part.
 
 Tests:
 - Unit test AI client request construction with mocked HTTP.
@@ -182,12 +182,12 @@ Success criteria:
 
 ## Part 9: AI Structured Kanban Updates
 
-- [ ] Define the structured AI response shape: user-facing reply plus optional Kanban update.
-- [ ] Send the current board JSON, user message, and conversation history to the AI.
-- [ ] Ask the AI for structured output compatible with the backend schema.
-- [ ] Validate any returned board update before saving it.
-- [ ] Apply valid board updates and reject invalid ones without corrupting existing data.
-- [ ] Document the AI prompt and response contract.
+- [x] Define the structured AI response shape: user-facing reply plus optional Kanban update.
+- [x] Send the current board JSON, user message, and conversation history to the AI.
+- [x] Ask the AI for structured output compatible with the backend schema.
+- [x] Validate any returned board update before saving it.
+- [x] Apply valid board updates and reject invalid ones without corrupting existing data.
+- [x] Document the AI prompt and response contract.
 
 Tests:
 - Unit test prompt construction.
@@ -204,12 +204,12 @@ Success criteria:
 
 ## Part 10: AI Sidebar Widget
 
-- [ ] Add a sidebar chat widget to the Kanban UI.
-- [ ] Let users send messages to the backend AI route.
-- [ ] Display conversation messages clearly.
-- [ ] Show loading and error states for AI responses.
-- [ ] Refresh the Kanban board automatically when the AI updates it.
-- [ ] Keep the visual design aligned with the existing color scheme and avoid adding unrelated UI.
+- [x] Add a sidebar chat widget to the Kanban UI.
+- [x] Let users send messages to the backend AI route.
+- [x] Display conversation messages clearly.
+- [x] Show loading and error states for AI responses.
+- [x] Refresh the Kanban board automatically when the AI updates it.
+- [x] Keep the visual design aligned with the existing color scheme and avoid adding unrelated UI.
 
 Tests:
 - Unit test chat input and message rendering.

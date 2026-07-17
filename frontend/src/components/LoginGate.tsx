@@ -39,6 +39,7 @@ export const LoginGate = () => {
   const handleLogout = () => {
     sessionStorage.removeItem(AUTH_STORAGE_KEY);
     sessionStorage.removeItem(AUTH_USERNAME_STORAGE_KEY);
+    sessionStorage.removeItem(`pm-main-chat-history-${authenticatedUsername}`);
     setAuthenticatedUsername("user");
     setIsAuthenticated(false);
     setUsername("");

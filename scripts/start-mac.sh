@@ -13,10 +13,13 @@ docker build -t "$IMAGE_NAME" .
 docker stop "$CONTAINER_NAME" >/dev/null 2>&1 || true
 docker rm "$CONTAINER_NAME" >/dev/null 2>&1 || true
 
+# Ensure local pm.db file exists on the host so Docker doesn't mount it as a directory
+touch pm.db
+
 if [ -f .env ]; then
-  docker run --env-file .env -d --name "$CONTAINER_NAME" -p "$PORT:8000" "$IMAGE_NAME"
+  docker run --env-file .env -v "$(pwd)/pm.db:/app/pm.db" -d --name "$CONTAINER_NAME" -p "$PORT:8000" "$IMAGE_NAME"
 else
-  docker run -d --name "$CONTAINER_NAME" -p "$PORT:8000" "$IMAGE_NAME"
+  docker run -v "$(pwd)/pm.db:/app/pm.db" -d --name "$CONTAINER_NAME" -p "$PORT:8000" "$IMAGE_NAME"
 fi
 
 echo "Project Management MVP is running at http://localhost:$PORT"

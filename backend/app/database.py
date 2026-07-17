@@ -61,8 +61,11 @@ DEFAULT_BOARD_DATA = {
 }
 
 
-def init_db(db_path: Path = DB_PATH) -> None:
+def init_db(db_path: Path | None = None) -> None:
     """Initialize the database with schema and seed data if it does not exist."""
+    if db_path is None:
+        db_path = DB_PATH
+
     if db_path.exists():
         return
 
@@ -106,8 +109,11 @@ def init_db(db_path: Path = DB_PATH) -> None:
     conn.close()
 
 
-def get_board(username: str, db_path: Path = DB_PATH) -> dict:
+def get_board(username: str, db_path: Path | None = None) -> dict:
     """Fetch the board data for a given username."""
+    if db_path is None:
+        db_path = DB_PATH
+
     conn = sqlite3.connect(db_path)
     cursor = conn.cursor()
 
@@ -130,8 +136,11 @@ def get_board(username: str, db_path: Path = DB_PATH) -> dict:
     return json.loads(row[0])
 
 
-def update_board(username: str, board_data: dict, db_path: Path = DB_PATH) -> dict:
+def update_board(username: str, board_data: dict, db_path: Path | None = None) -> dict:
     """Update the board data for a given username."""
+    if db_path is None:
+        db_path = DB_PATH
+
     conn = sqlite3.connect(db_path)
     cursor = conn.cursor()
 
