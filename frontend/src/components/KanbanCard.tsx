@@ -22,8 +22,8 @@ export const KanbanCard = ({ card, onDelete }: KanbanCardProps) => {
       ref={setNodeRef}
       style={style}
       className={clsx(
-        "rounded-2xl border border-transparent bg-white px-4 py-4 shadow-[0_12px_24px_rgba(3,33,71,0.08)]",
-        "transition-all duration-150",
+        "group rounded-2xl border border-transparent bg-white px-4 py-4 shadow-[0_12px_24px_rgba(3,33,71,0.08)]",
+        "transition-all duration-150 hover:border-[var(--primary-blue)] hover:shadow-[0_16px_32px_rgba(3,33,71,0.12)]",
         isDragging && "opacity-60 shadow-[0_18px_32px_rgba(3,33,71,0.16)]"
       )}
       {...attributes}
@@ -35,7 +35,7 @@ export const KanbanCard = ({ card, onDelete }: KanbanCardProps) => {
           <h4 className="font-display text-base font-semibold text-[var(--navy-dark)]">
             {card.title}
           </h4>
-          <p className="mt-2 text-xs leading-relaxed text-[var(--gray-text)] line-clamp-2">
+          <p className="mt-2 text-xs leading-relaxed text-[var(--gray-text)] line-clamp-2 group-hover:line-clamp-none group-hover:text-[var(--navy-dark)] transition-colors whitespace-pre-wrap">
             {card.details}
           </p>
         </div>
